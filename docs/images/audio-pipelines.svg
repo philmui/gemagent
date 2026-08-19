@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Gemini PCM and OpenAI WebRTC audio pipelines</title>
+  <desc id="desc">The upper lane shows browser microphone audio resampled to PCM16 at 16 kilohertz, relayed through FastAPI and ADK, and returned as PCM16 at 24 kilohertz. The lower lane shows the OpenAI Agents SDK managing browser WebRTC audio directly with OpenAI.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101425"/><stop offset="1" stop-color="#1c2039"/></linearGradient>
+    <linearGradient id="gline" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#a18eff"/><stop offset="1" stop-color="#725fe1"/></linearGradient>
+    <linearGradient id="oline" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#63e8ca"/><stop offset="1" stop-color="#2cae9a"/></linearGradient>
+    <marker id="violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#9f8dff"/></marker>
+    <marker id="mint" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#59e1c5"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="9" flood-opacity=".35"/></filter>
+  </defs>
+  <rect width="1200" height="680" rx="28" fill="url(#bg)"/>
+  <g font-family="Inter,system-ui,sans-serif">
+    <text x="54" y="56" fill="#f6f5ff" font-size="26" font-weight="750">Native audio paths optimized for each provider</text>
+    <text x="54" y="84" fill="#adb6d2" font-size="15">Gemini relays PCM through the backend. OpenAI connects with browser WebRTC.</text>
+
+    <rect x="50" y="114" width="1100" height="238" rx="22" fill="#222542" stroke="#6256b8"/>
+    <rect x="70" y="134" width="144" height="34" rx="17" fill="#4b3fa1"/>
+    <text x="142" y="156" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" letter-spacing=".8">GEMINI LANE</text>
+    <g filter="url(#shadow)">
+      <rect x="76" y="197" width="165" height="105" rx="16" fill="#181d33" stroke="#414a6b"/>
+      <path d="M108 238v18a18 18 0 0036 0v-18M126 217a11 11 0 00-11 11v22a11 11 0 0022 0v-22a11 11 0 00-11-11zM126 274v12M112 286h28" fill="none" stroke="#c6cee4" stroke-width="3" stroke-linecap="round"/>
+      <text x="181" y="229" fill="#f4f3ff" font-size="14" font-weight="700">Microphone</text>
+      <text x="181" y="252" fill="#aeb7d2" font-size="11">44.1 or 48 kHz</text>
+      <text x="181" y="273" fill="#aeb7d2" font-size="11">mono stream</text>
+      <rect x="282" y="197" width="187" height="105" rx="16" fill="#211f41" stroke="#6959ca"/>
+      <text x="375" y="229" text-anchor="middle" fill="#f4f1ff" font-size="14" font-weight="700">AudioWorklet</text>
+      <path d="M311 258c8-18 16 18 24 0s16 18 24 0 16 18 24 0 16 18 24 0 16 18 24 0" fill="none" stroke="#a18eff" stroke-width="3" stroke-linecap="round"/>
+      <text x="375" y="286" text-anchor="middle" fill="#bab2df" font-size="11">resample + PCM16</text>
+      <rect x="510" y="197" width="195" height="105" rx="16" fill="#211f41" stroke="#6959ca"/>
+      <text x="607" y="229" text-anchor="middle" fill="#f4f1ff" font-size="14" font-weight="700">FastAPI WebSocket</text>
+      <text x="607" y="255" text-anchor="middle" fill="#bab2df" font-size="11">binary 16 kHz frames</text>
+      <text x="607" y="276" text-anchor="middle" fill="#9f91ef" font-size="11" font-weight="700">size + rate + queue limits</text>
+      <rect x="746" y="197" width="176" height="105" rx="16" fill="#211f41" stroke="#6959ca"/>
+      <text x="834" y="229" text-anchor="middle" fill="#f4f1ff" font-size="14" font-weight="700">ADK Runner</text>
+      <text x="834" y="255" text-anchor="middle" fill="#bab2df" font-size="11">LiveRequestQueue</text>
+      <text x="834" y="276" text-anchor="middle" fill="#bab2df" font-size="11">audio/pcm;rate=16000</text>
+      <rect x="963" y="197" width="161" height="105" rx="16" fill="#2b294e" stroke="#8371ea"/>
+      <text x="1043" y="229" text-anchor="middle" fill="#f4f1ff" font-size="14" font-weight="700">Gemini Live</text>
+      <path d="M990 260h108" stroke="#564d8f" stroke-width="2"/><text x="1043" y="282" text-anchor="middle" fill="#c5bcf3" font-size="11">native audio model</text>
+    </g>
+    <path d="M241 249h41M469 249h41M705 249h41M922 249h41" stroke="url(#gline)" stroke-width="4" marker-end="url(#violet)"/>
+    <path d="M1043 302v36H375v-36" fill="none" stroke="#9f8dff" stroke-width="3" marker-end="url(#violet)"/>
+    <text x="620" y="326" text-anchor="middle" fill="#dcd6ff" font-size="11" font-weight="700">24 kHz PCM16 output · captions · interruption</text>
+
+    <rect x="50" y="384" width="1100" height="205" rx="22" fill="#1b3437" stroke="#328d82"/>
+    <rect x="70" y="404" width="144" height="34" rx="17" fill="#216f65"/>
+    <text x="142" y="426" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" letter-spacing=".8">OPENAI LANE</text>
+    <g filter="url(#shadow)">
+      <rect x="76" y="465" width="176" height="90" rx="16" fill="#13282a" stroke="#315e5a"/>
+      <text x="164" y="495" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">Microphone stream</text>
+      <text x="164" y="520" text-anchor="middle" fill="#a6d1ca" font-size="11">getUserMedia</text>
+      <text x="164" y="539" text-anchor="middle" fill="#a6d1ca" font-size="11">browser permission</text>
+      <rect x="314" y="465" width="258" height="90" rx="16" fill="#13282a" stroke="#318578"/>
+      <text x="443" y="493" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">OpenAI Agents SDK</text>
+      <text x="443" y="518" text-anchor="middle" fill="#a6d1ca" font-size="11">RealtimeSession + RealtimeAgent</text>
+      <text x="443" y="538" text-anchor="middle" fill="#6fe5ce" font-size="11" font-weight="700">OpenAIRealtimeWebRTC</text>
+      <rect x="775" y="465" width="202" height="90" rx="16" fill="#153034" stroke="#32988a"/>
+      <text x="876" y="493" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">OpenAI Realtime</text>
+      <text x="876" y="518" text-anchor="middle" fill="#a6d1ca" font-size="11">codec negotiation + VAD</text>
+      <text x="876" y="538" text-anchor="middle" fill="#a6d1ca" font-size="11">remote media track</text>
+      <rect x="1005" y="465" width="119" height="90" rx="16" fill="#13282a" stroke="#315e5a"/>
+      <text x="1064" y="495" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">Speaker</text>
+      <path d="M1037 521h9l12-10v31l-12-10h-9zM1064 518c7 5 7 13 0 18" fill="none" stroke="#59e1c5" stroke-width="2.5"/>
+    </g>
+    <path d="M252 510h62" stroke="url(#oline)" stroke-width="5" marker-end="url(#mint)"/>
+    <path d="M572 510h203" stroke="url(#oline)" stroke-width="5" marker-end="url(#mint)"/>
+    <path d="M977 510h28" stroke="url(#oline)" stroke-width="5" marker-end="url(#mint)"/>
+    <text x="674" y="487" text-anchor="middle" fill="#8ce6d5" font-size="11" font-weight="700">Direct browser WebRTC</text>
+    <rect x="50" y="615" width="1100" height="38" rx="19" fill="#171c31"/>
+    <text x="600" y="640" text-anchor="middle" fill="#b9c1d8" font-size="12">Shared rule: stop old media completely before a provider or voice switch opens the next path</text>
+  </g>
+</svg>

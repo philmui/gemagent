@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Voice Lab dual-provider agent architecture</title>
+  <desc id="desc">The browser routes Gemini PCM audio through a FastAPI WebSocket and Google ADK Runner to Vertex AI. Google authentication uses Application Default Credentials. The same browser uses the OpenAI Agents SDK and WebRTC directly to OpenAI after FastAPI creates a short-lived client secret.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f1425"/><stop offset="1" stop-color="#1d2039"/></linearGradient>
+    <linearGradient id="gem" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a390ff"/><stop offset="1" stop-color="#6c59df"/></linearGradient>
+    <linearGradient id="oa" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#64e7ca"/><stop offset="1" stop-color="#279d8d"/></linearGradient>
+    <marker id="violetArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#9d8bff"/></marker>
+    <marker id="mintArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#59e1c5"/></marker>
+    <marker id="grayArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#8b96b7"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#04050c" flood-opacity=".38"/></filter>
+  </defs>
+  <rect width="1200" height="760" rx="30" fill="url(#bg)"/>
+  <circle cx="1120" cy="80" r="190" fill="#7a66ee" opacity=".07"/><circle cx="90" cy="710" r="170" fill="#3ed6b8" opacity=".05"/>
+  <g font-family="Inter,system-ui,sans-serif">
+    <text x="54" y="55" fill="#f7f6ff" font-size="27" font-weight="750">Two provider-native runtimes share one calm voice interface</text>
+    <text x="54" y="84" fill="#abb5d2" font-size="15">The selected provider changes the full transport and runtime, not only the model label</text>
+
+    <g filter="url(#shadow)">
+      <rect x="52" y="126" width="290" height="466" rx="24" fill="#202641" stroke="#414b70"/>
+      <rect x="74" y="151" width="246" height="61" rx="15" fill="#161b31" stroke="#394363"/>
+      <circle cx="105" cy="181" r="14" fill="url(#gem)"/>
+      <path d="M96 181c6-12 12 12 18 0s12 12 18 0" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+      <text x="139" y="177" fill="#f7f6ff" font-size="18" font-weight="700">Next.js browser</text>
+      <text x="139" y="197" fill="#aeb8d3" font-size="12">Voice Lab UI + session hook</text>
+      <rect x="74" y="235" width="246" height="139" rx="17" fill="#25284a" stroke="#6f5de0"/>
+      <text x="94" y="263" fill="#c9c1ff" font-size="12" font-weight="800" letter-spacing="1">GEMINI ADAPTER</text>
+      <text x="94" y="293" fill="#f3f1ff" font-size="15" font-weight="700">AudioWorklet capture</text>
+      <text x="94" y="316" fill="#b6bfd8" font-size="13">PCM16 input at 16 kHz</text>
+      <text x="94" y="339" fill="#b6bfd8" font-size="13">PCM16 player at 24 kHz</text>
+      <text x="94" y="360" fill="#a895ff" font-size="12" font-weight="700">Binary WebSocket</text>
+      <rect x="74" y="397" width="246" height="152" rx="17" fill="#1c3537" stroke="#379e8f"/>
+      <text x="94" y="425" fill="#a9f2e4" font-size="12" font-weight="800" letter-spacing="1">OPENAI ADAPTER</text>
+      <text x="94" y="455" fill="#f0fffb" font-size="15" font-weight="700">RealtimeAgent</text>
+      <text x="94" y="478" fill="#b8d7d3" font-size="13">RealtimeSession</text>
+      <text x="94" y="501" fill="#b8d7d3" font-size="13">OpenAIRealtimeWebRTC</text>
+      <text x="94" y="527" fill="#59e1c5" font-size="12" font-weight="700">Agents SDK 0.14.0</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="430" y="126" width="346" height="466" rx="24" fill="#202641" stroke="#414b70"/>
+      <text x="458" y="166" fill="#f7f6ff" font-size="19" font-weight="750">FastAPI backend</text>
+      <text x="458" y="190" fill="#aeb8d3" font-size="13">Trusted server boundary</text>
+      <rect x="455" y="218" width="296" height="215" rx="18" fill="#27284c" stroke="#7967e8"/>
+      <text x="478" y="250" fill="#c9c1ff" font-size="12" font-weight="800" letter-spacing="1">GOOGLE ADK · VERTEX AI ADC</text>
+      <rect x="478" y="269" width="250" height="46" rx="11" fill="#191d35"/><text x="603" y="298" text-anchor="middle" fill="#f4f2ff" font-size="14" font-weight="700">Agent + App + Runner</text>
+      <rect x="478" y="326" width="119" height="76" rx="11" fill="#191d35"/>
+      <text x="537" y="354" text-anchor="middle" fill="#e6e2ff" font-size="13" font-weight="700">Fresh session</text>
+      <text x="537" y="378" text-anchor="middle" fill="#aeb8d3" font-size="11">Random IDs</text>
+      <rect x="609" y="326" width="119" height="76" rx="11" fill="#191d35"/>
+      <text x="668" y="354" text-anchor="middle" fill="#e6e2ff" font-size="13" font-weight="700">Bounded queue</text>
+      <text x="668" y="378" text-anchor="middle" fill="#aeb8d3" font-size="11">Backpressure</text>
+      <rect x="455" y="455" width="296" height="104" rx="18" fill="#193335" stroke="#358c81"/>
+      <text x="478" y="485" fill="#a9f2e4" font-size="12" font-weight="800" letter-spacing="1">OPENAI BROKER</text>
+      <text x="478" y="516" fill="#f0fffb" font-size="14" font-weight="700">POST /v1/realtime/client_secrets</text>
+      <text x="478" y="540" fill="#b8d7d3" font-size="12">Validated voice + server model</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="866" y="152" width="282" height="205" rx="24" fill="#27284c" stroke="#7e6cec"/>
+      <circle cx="911" cy="202" r="25" fill="url(#gem)"/>
+      <path d="M897 202l14-14 14 14-14 14z" fill="none" stroke="#fff" stroke-width="2"/>
+      <text x="950" y="199" fill="#f6f4ff" font-size="19" font-weight="750">Gemini Live</text>
+      <text x="950" y="222" fill="#c0b8ef" font-size="12">Vertex AI Live API</text>
+      <rect x="891" y="250" width="232" height="48" rx="12" fill="#191d35"/>
+      <text x="1007" y="280" text-anchor="middle" fill="#e7e3ff" font-size="11" font-weight="700">gemini-live-2.5-flash-native-audio</text>
+      <text x="1007" y="327" text-anchor="middle" fill="#afa8d6" font-size="12">Vertex AI us-central1</text>
+      <rect x="866" y="412" width="282" height="180" rx="24" fill="#1c3537" stroke="#379e8f"/>
+      <circle cx="911" cy="462" r="25" fill="url(#oa)"/>
+      <circle cx="911" cy="462" r="10" fill="none" stroke="#102a27" stroke-width="3"/><path d="M911 444v8M911 472v8M893 462h8M921 462h8" stroke="#102a27" stroke-width="3"/>
+      <text x="950" y="459" fill="#effffb" font-size="19" font-weight="750">OpenAI Realtime</text>
+      <text x="950" y="482" fill="#abd5ce" font-size="12">Direct browser media over WebRTC</text>
+      <rect x="891" y="512" width="232" height="48" rx="12" fill="#142729"/>
+      <text x="1007" y="542" text-anchor="middle" fill="#d5faf3" font-size="14" font-weight="700">gpt-realtime-2.1</text>
+    </g>
+
+    <path d="M342 287H430" stroke="#9d8bff" stroke-width="4" marker-end="url(#violetArrow)"/>
+    <text x="386" y="268" text-anchor="middle" fill="#c5bdff" font-size="11" font-weight="700">PCM + controls</text>
+    <path d="M776 302C817 302 820 252 866 252" fill="none" stroke="#9d8bff" stroke-width="4" marker-end="url(#violetArrow)"/>
+    <text x="818" y="270" text-anchor="middle" fill="#c5bdff" font-size="11" font-weight="700">run_live</text>
+    <path d="M342 481H430" stroke="#8b96b7" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#grayArrow)"/>
+    <text x="386" y="463" text-anchor="middle" fill="#aeb8d3" font-size="11">client secret</text>
+    <path d="M776 503H866" stroke="#8b96b7" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#grayArrow)"/>
+    <text x="821" y="484" text-anchor="middle" fill="#aeb8d3" font-size="11">mint only</text>
+    <path d="M320 531C354 565 352 650 420 650H820C868 650 898 610 941 592" fill="none" stroke="#59e1c5" stroke-width="5" marker-end="url(#mintArrow)"/>
+    <text x="620" y="689" text-anchor="middle" fill="#8ff0dd" font-size="13" font-weight="750">OpenAI media · direct browser WebRTC</text>
+  </g>
+</svg>

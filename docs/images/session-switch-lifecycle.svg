@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" role="img" aria-labelledby="title desc">
+  <title id="title">Immediate provider switch lifecycle</title>
+  <desc id="desc">A guarded sequence from an active provider through selection, epoch change, full cleanup, new connection, adapter readiness, and a new isolated conversation. Stale callbacks are discarded.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101425"/><stop offset="1" stop-color="#1d203a"/></linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9a87ff"/><stop offset="1" stop-color="#55dfc2"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#8f98b8"/></marker>
+    <marker id="roseArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#ef9fb1"/></marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-opacity=".35"/></filter>
+  </defs>
+  <rect width="1200" height="480" rx="28" fill="url(#bg)"/>
+  <text x="56" y="56" fill="#f6f5ff" font-family="Inter,system-ui,sans-serif" font-size="26" font-weight="750">A clean handoff keeps only one session live</text>
+  <text x="56" y="84" fill="#aeb7d4" font-family="Inter,system-ui,sans-serif" font-size="15">Selected state updates now. Active state waits for the new adapter readiness contract.</text>
+  <path d="M128 220H1071" stroke="#3b4567" stroke-width="8" stroke-linecap="round"/>
+  <path d="M128 220H1071" stroke="url(#line)" stroke-width="4" stroke-linecap="round"/>
+  <g font-family="Inter,system-ui,sans-serif" filter="url(#shadow)">
+    <g transform="translate(56 139)">
+      <rect width="144" height="162" rx="18" fill="#252949" stroke="#7565d8"/>
+      <circle cx="72" cy="81" r="18" fill="#9a87ff"/>
+      <text x="72" y="44" text-anchor="middle" fill="#f6f5ff" font-size="16" font-weight="700">Old active</text>
+      <text x="72" y="125" text-anchor="middle" fill="#b9c0d8" font-size="13">One mic owner</text>
+      <text x="72" y="145" text-anchor="middle" fill="#b9c0d8" font-size="13">Epoch N</text>
+    </g>
+    <g transform="translate(230 139)">
+      <rect width="144" height="162" rx="18" fill="#202640" stroke="#424c70"/>
+      <circle cx="72" cy="81" r="18" fill="#7e8aaa"/><path d="M64 81l6 6 12-15" fill="none" stroke="#fff" stroke-width="3"/>
+      <text x="72" y="44" text-anchor="middle" fill="#f6f5ff" font-size="16" font-weight="700">Select</text>
+      <text x="72" y="125" text-anchor="middle" fill="#b9c0d8" font-size="13">UI changes now</text>
+      <text x="72" y="145" text-anchor="middle" fill="#b9c0d8" font-size="13">Phase: Switching</text>
+    </g>
+    <g transform="translate(404 139)">
+      <rect width="144" height="162" rx="18" fill="#202640" stroke="#424c70"/>
+      <circle cx="72" cy="81" r="18" fill="#7e8aaa"/><text x="72" y="87" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">N+1</text>
+      <text x="72" y="44" text-anchor="middle" fill="#f6f5ff" font-size="16" font-weight="700">Guard</text>
+      <text x="72" y="125" text-anchor="middle" fill="#b9c0d8" font-size="13">Abort old setup</text>
+      <text x="72" y="145" text-anchor="middle" fill="#b9c0d8" font-size="13">Reject stale events</text>
+    </g>
+    <g transform="translate(578 139)">
+      <rect width="144" height="162" rx="18" fill="#202640" stroke="#424c70"/>
+      <circle cx="72" cy="81" r="18" fill="#7e8aaa"/><path d="M65 74l14 14M79 74L65 88" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <text x="72" y="44" text-anchor="middle" fill="#f6f5ff" font-size="16" font-weight="700">Close fully</text>
+      <text x="72" y="125" text-anchor="middle" fill="#b9c0d8" font-size="13">Transport + tracks</text>
+      <text x="72" y="145" text-anchor="middle" fill="#b9c0d8" font-size="13">Playback + tasks</text>
+    </g>
+    <g transform="translate(752 139)">
+      <rect width="144" height="162" rx="18" fill="#202640" stroke="#424c70"/>
+      <circle cx="72" cy="81" r="18" fill="#7e8aaa"/><path d="M60 81h24M78 75l6 6-6 6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <text x="72" y="44" text-anchor="middle" fill="#f6f5ff" font-size="16" font-weight="700">Connect new</text>
+      <text x="72" y="125" text-anchor="middle" fill="#b9c0d8" font-size="13">Fresh ADK session</text>
+      <text x="72" y="145" text-anchor="middle" fill="#b9c0d8" font-size="13">or client secret</text>
+    </g>
+    <g transform="translate(926 139)">
+      <rect width="218" height="162" rx="18" fill="#233c3c" stroke="#55dfc2" stroke-width="2"/>
+      <circle cx="109" cy="81" r="20" fill="#55dfc2"/><path d="M100 81l6 6 13-16" fill="none" stroke="#112523" stroke-width="3.5"/>
+      <text x="109" y="44" text-anchor="middle" fill="#f6f5ff" font-size="16" font-weight="700">New active</text>
+      <text x="109" y="125" text-anchor="middle" fill="#c3ded9" font-size="13">Runtime ready</text>
+      <text x="109" y="145" text-anchor="middle" fill="#c3ded9" font-size="13">Fresh conversation</text>
+    </g>
+  </g>
+  <path d="M476 301v43" fill="none" stroke="#ef9fb1" stroke-width="2" stroke-dasharray="6 6" marker-end="url(#roseArrow)"/>
+  <rect x="271" y="344" width="435" height="72" rx="14" fill="#291d31" stroke="#70435d"/>
+  <text x="294" y="374" fill="#ffd4df" font-family="Inter,system-ui,sans-serif" font-size="15" font-weight="700">Late callback from Epoch N</text>
+  <text x="294" y="398" fill="#d6acc0" font-family="Inter,system-ui,sans-serif" font-size="13">Discarded before it can change phase, captions, level, or error</text>
+  <rect x="745" y="344" width="399" height="72" rx="14" fill="#172c2d" stroke="#356d67"/>
+  <text x="768" y="374" fill="#b9f5e8" font-family="Inter,system-ui,sans-serif" font-size="15" font-weight="700">No automatic fallback</text>
+  <text x="768" y="398" fill="#a9d4cf" font-family="Inter,system-ui,sans-serif" font-size="13">A failed replacement ends with no provider falsely active</text>
+</svg>

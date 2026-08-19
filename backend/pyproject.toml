@@ -1,0 +1,38 @@
+[project]
+name = "gemvoice-backend"
+version = "0.1.0"
+description = "ADK voice gateway for Gemini Live and OpenAI Realtime credentials"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+  "fastapi>=0.116.0,<1.0.0",
+  "google-adk>=2.6.2,<3.0.0",
+  "google-genai>=2.9.0,<3.0.0",
+  "httpx>=0.28.1,<1.0.0",
+  "langsmith[google-adk]>=0.7.0,<1.0.0",
+  "pydantic-settings>=2.10.0,<3.0.0",
+  "python-dotenv>=1.1.0,<2.0.0",
+  "uvicorn[standard]>=0.35.0,<1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4.0,<10.0.0",
+  "pytest-asyncio>=1.1.0,<2.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="380" viewBox="0 0 1200 380" role="img" aria-labelledby="title desc">
+  <title id="title">Voice Lab local setup in five steps</title>
+  <desc id="desc">A five-step path from installing prerequisites through configuring backend-only secrets, testing both applications, starting two local servers, and having the first conversation.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101425"/>
+      <stop offset="1" stop-color="#1b1d36"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9c8cff"/>
+      <stop offset="1" stop-color="#59e1c5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#050611" flood-opacity=".4"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#6f7898"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="380" rx="28" fill="url(#bg)"/>
+  <circle cx="1100" cy="50" r="150" fill="#715cff" opacity=".08"/>
+  <circle cx="80" cy="360" r="100" fill="#3cd7ba" opacity=".06"/>
+  <text x="62" y="58" fill="#f5f4ff" font-family="Inter,system-ui,sans-serif" font-size="26" font-weight="700">From checkout to your first spoken answer</text>
+  <text x="62" y="87" fill="#aeb6d3" font-family="Inter,system-ui,sans-serif" font-size="15">Keep credentials outside the browser and repository at every step</text>
+  <g fill="none" stroke="#6f7898" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M226 230H268"/>
+    <path d="M450 230H492"/>
+    <path d="M674 230H716"/>
+    <path d="M898 230H940"/>
+  </g>
+  <g font-family="Inter,system-ui,sans-serif" filter="url(#shadow)">
+    <g transform="translate(52 128)">
+      <rect width="174" height="204" rx="20" fill="#202640" stroke="#3d4667"/>
+      <circle cx="32" cy="32" r="16" fill="#9180ff"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">1</text>
+      <path d="M68 43h72M78 34v18M92 34v18M106 34v18M120 34v18" stroke="#bdc4dc" stroke-width="3" stroke-linecap="round"/>
+      <text x="20" y="90" fill="#f5f4ff" font-size="18" font-weight="700">Prerequisites</text>
+      <text x="20" y="119" fill="#b7bfd8" font-size="14">Backend: Python + uv</text>
+      <text x="20" y="143" fill="#b7bfd8" font-size="14">Node.js + npm</text>
+      <text x="20" y="167" fill="#b7bfd8" font-size="14">Modern browser</text>
+    </g>
+    <g transform="translate(276 128)">
+      <rect width="174" height="204" rx="20" fill="#202640" stroke="#3d4667"/>
+      <circle cx="32" cy="32" r="16" fill="#9180ff"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">2</text>
+      <rect x="75" y="22" width="58" height="42" rx="9" fill="none" stroke="#bdc4dc" stroke-width="3"/>
+      <path d="M88 22v-8a16 16 0 0132 0v8" fill="none" stroke="#59e1c5" stroke-width="3"/>
+      <text x="20" y="90" fill="#f5f4ff" font-size="18" font-weight="700">Configure</text>
+      <text x="20" y="119" fill="#b7bfd8" font-size="14">Root .env: settings</text>
+      <text x="20" y="143" fill="#b7bfd8" font-size="14">Frontend: URL only</text>
+      <text x="20" y="167" fill="#59e1c5" font-size="13" font-weight="700">ADC stays outside repo</text>
+    </g>
+    <g transform="translate(500 128)">
+      <rect width="174" height="204" rx="20" fill="#202640" stroke="#3d4667"/>
+      <circle cx="32" cy="32" r="16" fill="#9180ff"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">3</text>
+      <path d="M75 43l12 12 27-30M75 68h59" fill="none" stroke="#59e1c5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="20" y="90" fill="#f5f4ff" font-size="18" font-weight="700">Install + test</text>
+      <text x="20" y="119" fill="#b7bfd8" font-size="14">Backend: uv + pytest</text>
+      <text x="20" y="143" fill="#b7bfd8" font-size="14">npm install</text>
+      <text x="20" y="167" fill="#b7bfd8" font-size="14">npm run check</text>
+    </g>
+    <g transform="translate(724 128)">
+      <rect width="174" height="204" rx="20" fill="#202640" stroke="#3d4667"/>
+      <circle cx="32" cy="32" r="16" fill="#9180ff"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">4</text>
+      <rect x="70" y="24" width="70" height="42" rx="6" fill="#13182c" stroke="#bdc4dc" stroke-width="2"/>
+      <path d="M80 38l8 7-8 7M94 52h18" fill="none" stroke="#59e1c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="20" y="90" fill="#f5f4ff" font-size="18" font-weight="700">Start both</text>
+      <text x="20" y="119" fill="#b7bfd8" font-size="14">FastAPI :8000</text>
+      <text x="20" y="143" fill="#b7bfd8" font-size="14">Next.js :3000</text>
+      <text x="20" y="167" fill="#b7bfd8" font-size="14">Check /health</text>
+    </g>
+    <g transform="translate(948 128)">
+      <rect width="200" height="204" rx="20" fill="#25294a" stroke="url(#accent)" stroke-width="2"/>
+      <circle cx="32" cy="32" r="16" fill="#59e1c5"/><text x="32" y="38" text-anchor="middle" fill="#10201e" font-size="16" font-weight="800">5</text>
+      <circle cx="115" cy="44" r="26" fill="#6e5cff" opacity=".28"/>
+      <path d="M94 44c7-14 14 14 21 0s14 14 21 0" fill="none" stroke="#e5e1ff" stroke-width="3" stroke-linecap="round"/>
+      <text x="20" y="90" fill="#f5f4ff" font-size="18" font-weight="700">Speak</text>
+      <text x="20" y="119" fill="#b7bfd8" font-size="14">Choose provider</text>
+      <text x="20" y="143" fill="#b7bfd8" font-size="14">Allow microphone</text>
+      <text x="20" y="167" fill="#59e1c5" font-size="13" font-weight="700">See Active model</text>
+    </g>
+  </g>
+</svg>

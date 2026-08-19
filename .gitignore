@@ -1,0 +1,32 @@
+# Secrets. Examples are explicitly allowed below.
+.env
+.env.*
+!.env.example
+!**/.env.example
+!**/.env.local.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Node and Next.js
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+npm-debug.log*
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+

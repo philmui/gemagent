@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">Provider-native web search function flow</title>
+  <desc id="desc">Gemini Live calls a Google ADK search agent on the backend. OpenAI Realtime calls a browser Agents SDK function that uses a protected FastAPI endpoint and the Responses API web search tool. Both paths send content-free call and response transitions to the Function activity lane.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#101425"/>
+      <stop offset="1" stop-color="#1d2039"/>
+    </linearGradient>
+    <linearGradient id="gemini" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#a390ff"/>
+      <stop offset="1" stop-color="#705ee1"/>
+    </linearGradient>
+    <linearGradient id="openai" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#64e7ca"/>
+      <stop offset="1" stop-color="#2ba996"/>
+    </linearGradient>
+    <marker id="violetArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#a390ff"/>
+    </marker>
+    <marker id="mintArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#64e7ca"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-25%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#050711" flood-opacity=".36"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="650" rx="30" fill="url(#bg)"/>
+  <g font-family="Inter,system-ui,sans-serif">
+    <text x="54" y="56" fill="#f7f6ff" font-size="27" font-weight="750">One search experience, two provider-native tool paths</text>
+    <text x="54" y="86" fill="#adb6d2" font-size="15">A call moves right. Its validated response returns along the same path.</text>
+
+    <rect x="45" y="120" width="1110" height="178" rx="23" fill="#242543" stroke="#6f5fe0"/>
+    <rect x="66" y="140" width="122" height="30" rx="15" fill="url(#gemini)"/>
+    <text x="127" y="160" text-anchor="middle" fill="#fff" font-size="12" font-weight="800" letter-spacing=".8">GEMINI</text>
+    <g filter="url(#shadow)">
+      <rect x="72" y="194" width="205" height="72" rx="15" fill="#181d34" stroke="#6f5fe0"/>
+      <text x="174" y="222" text-anchor="middle" fill="#f5f2ff" font-size="14" font-weight="700">Gemini Live</text>
+      <text x="174" y="245" text-anchor="middle" fill="#b9b1e1" font-size="11">native audio model</text>
+      <rect x="343" y="194" width="220" height="72" rx="15" fill="#181d34" stroke="#6f5fe0"/>
+      <text x="453" y="222" text-anchor="middle" fill="#f5f2ff" font-size="14" font-weight="700">ADK parent agent</text>
+      <text x="453" y="245" text-anchor="middle" fill="#b9b1e1" font-size="11">FastAPI trusted boundary</text>
+      <rect x="629" y="194" width="225" height="72" rx="15" fill="#181d34" stroke="#6f5fe0"/>
+      <text x="741" y="222" text-anchor="middle" fill="#f5f2ff" font-size="14" font-weight="700">google_search_agent</text>
+      <text x="741" y="245" text-anchor="middle" fill="#b9b1e1" font-size="11">real ADK function lifecycle</text>
+      <rect x="920" y="194" width="205" height="72" rx="15" fill="#181d34" stroke="#6f5fe0"/>
+      <text x="1022" y="222" text-anchor="middle" fill="#f5f2ff" font-size="14" font-weight="700">Google Search</text>
+      <text x="1022" y="245" text-anchor="middle" fill="#b9b1e1" font-size="11">native grounded tool</text>
+    </g>
+    <path d="M277 230H333" stroke="#a390ff" stroke-width="3" marker-end="url(#violetArrow)"/>
+    <path d="M563 230H619" stroke="#a390ff" stroke-width="3" marker-end="url(#violetArrow)"/>
+    <path d="M854 230H910" stroke="#a390ff" stroke-width="3" marker-end="url(#violetArrow)"/>
+
+    <rect x="45" y="326" width="1110" height="178" rx="23" fill="#1d393a" stroke="#3eaa99"/>
+    <rect x="66" y="346" width="122" height="30" rx="15" fill="url(#openai)"/>
+    <text x="127" y="366" text-anchor="middle" fill="#102a27" font-size="12" font-weight="850" letter-spacing=".8">OPENAI</text>
+    <g filter="url(#shadow)">
+      <rect x="72" y="400" width="205" height="72" rx="15" fill="#14292b" stroke="#3eaa99"/>
+      <text x="174" y="428" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">OpenAI Realtime</text>
+      <text x="174" y="451" text-anchor="middle" fill="#afd7d0" font-size="11">calls web_search</text>
+      <rect x="343" y="400" width="220" height="72" rx="15" fill="#14292b" stroke="#3eaa99"/>
+      <text x="453" y="428" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">Agents SDK function</text>
+      <text x="453" y="451" text-anchor="middle" fill="#afd7d0" font-size="11">strict query schema</text>
+      <rect x="629" y="400" width="225" height="72" rx="15" fill="#14292b" stroke="#3eaa99"/>
+      <text x="741" y="428" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">FastAPI search endpoint</text>
+      <text x="741" y="451" text-anchor="middle" fill="#afd7d0" font-size="11">server key + limits</text>
+      <rect x="920" y="400" width="205" height="72" rx="15" fill="#14292b" stroke="#3eaa99"/>
+      <text x="1022" y="428" text-anchor="middle" fill="#effffb" font-size="14" font-weight="700">Responses API</text>
+      <text x="1022" y="451" text-anchor="middle" fill="#afd7d0" font-size="11">hosted web_search</text>
+    </g>
+    <path d="M277 436H333" stroke="#64e7ca" stroke-width="3" marker-end="url(#mintArrow)"/>
+    <path d="M563 436H619" stroke="#64e7ca" stroke-width="3" marker-end="url(#mintArrow)"/>
+    <path d="M854 436H910" stroke="#64e7ca" stroke-width="3" marker-end="url(#mintArrow)"/>
+
+    <rect x="45" y="535" width="1110" height="75" rx="20" fill="#191e33" stroke="#3b4565"/>
+    <text x="72" y="563" fill="#f2f3ff" font-size="14" font-weight="750">Function activity receives transitions, not conversation content</text>
+    <circle cx="75" cy="587" r="5" fill="#ffd079"/>
+    <text x="91" y="592" fill="#c5cce0" font-size="12">Call marker above</text>
+    <circle cx="240" cy="587" r="5" fill="#ff9a6f"/>
+    <text x="256" y="592" fill="#c5cce0" font-size="12">Response marker below</text>
+    <text x="1125" y="592" text-anchor="end" fill="#919bb9" font-size="12">No query, result, credential, or provider payload enters telemetry</text>
+  </g>
+</svg>
