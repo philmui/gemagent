@@ -9,15 +9,54 @@ from __future__ import annotations
 
 import logging
 import os
+from importlib.util import find_spec
 
 from dotenv import dotenv_values
 from langsmith.integrations.google_adk import configure_google_adk
 
 from .config import ENV_FILE
 
-
 logger = logging.getLogger(__name__)
 _configured = False
+
+
+class _OptionalMcpProbeFilter(logging.Filter):
+    """Hide only LangSmith's probe for ADK's intentionally optional MCP tool."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        message = record.getMessage()
+        return not (
+            record.name == "langsmith.integrations.google_adk"
+            and message.startswith("Failed to wrap McpTool.run_async:")
+            and "No module named 'mcp" in message
+        )
+
+
+def _configure_google_adk_safely(**kwargs: object) -> bool:
+    """Configure tracing without treating an unused ADK extra as a failure.
+
+    LangSmith currently attempts to wrap ``McpTool`` even when the application
+    installs base Google ADK and does not use MCP. ADK correctly keeps ``mcp``
+    behind its optional extra. Suppress that one known probe only when the MCP
+    package is absent; all other integration warnings remain visible.
+    """
+
+    integration_logger = logging.getLogger("langsmith.integrations.google_adk")
+    optional_mcp_filter = _OptionalMcpProbeFilter()
+    suppress_optional_probe = find_spec("mcp") is None
+    if suppress_optional_probe:
+        integration_logger.addFilter(optional_mcp_filter)
+    try:
+        return configure_google_adk(**kwargs)
+    except Exception:
+        # Tracing is explicitly optional and must not prevent the voice gateway
+        # from serving traffic. Keep the failure diagnosable without exposing
+        # environment values or credentials.
+        logger.exception("LangSmith Google ADK tracing could not be configured.")
+        return False
+    finally:
+        if suppress_optional_probe:
+            integration_logger.removeFilter(optional_mcp_filter)
 
 
 def _tracing_enabled() -> bool:
@@ -52,11 +91,14 @@ def configure_langsmith_google_adk(app_env: str) -> None:
         return
 
     project_name = os.getenv("LANGSMITH_PROJECT", "").strip() or None
-    configure_google_adk(
+    configured = _configure_google_adk_safely(
         project_name=project_name,
         name="voice-lab.gemini-live",
         metadata={"service": "gemvoice-backend", "environment": app_env},
         tags=["voice-lab", "gemini-live", "google-adk"],
     )
+    if not configured:
+        logger.warning("LangSmith Google ADK tracing remains disabled.")
+        return
     _configured = True
     logger.info("LangSmith Google ADK tracing is enabled.")
