@@ -211,6 +211,8 @@ function callbacks(): AdapterCallbacks {
     onInterrupted: vi.fn(),
     onLevel: vi.fn(),
     onOutputLevel: vi.fn(),
+    onAudioStart: vi.fn(),
+    onAudioEnd: vi.fn(),
     onTelemetry: vi.fn(),
     onError: vi.fn(),
   };
@@ -305,7 +307,13 @@ describe("OpenAI adapter speaker lifecycle", () => {
     session.emit("transport_event", { type: "output_audio_buffer.started" });
     await flushPlaybackRecovery();
     expect(audioState.ensureRemoteAudioPlayback).toHaveBeenCalledTimes(1);
+    expect(events.onAudioStart).toHaveBeenCalledOnce();
+    expect(events.onAudioStart).toHaveBeenCalledWith(expect.any(Number));
     expect(events.onPhase).toHaveBeenLastCalledWith("assistant-speaking");
+
+    session.emit("transport_event", { type: "output_audio_buffer.stopped" });
+    expect(events.onTurnComplete).toHaveBeenCalledOnce();
+    expect(events.onAudioEnd).toHaveBeenCalledWith(expect.any(Number));
 
     await adapter.stop("test-complete");
   });

@@ -8,12 +8,25 @@ export interface CaptionContext {
   sequence: number;
 }
 
+export function transcriptItemId(
+  epoch: number,
+  provider: Provider,
+  role: CaptionEvent["role"],
+  providerItemId: string,
+): string {
+  return `${epoch}:${provider}:${role}:${providerItemId}`;
+}
+
+export function captionItemId(event: CaptionEvent, context: CaptionContext): string {
+  return transcriptItemId(context.epoch, context.provider, event.role, event.itemId);
+}
+
 export function upsertCaption(
   items: TranscriptItem[],
   event: CaptionEvent,
   context: CaptionContext,
 ): TranscriptItem[] {
-  const id = `${context.epoch}:${context.provider}:${event.role}:${event.itemId}`;
+  const id = captionItemId(event, context);
   const existingIndex = items.findIndex((item) => item.id === id);
   if (existingIndex < 0) {
     return [
@@ -49,6 +62,19 @@ export function upsertCaption(
           ? "final"
           : existing.status,
   };
+  return next;
+}
+
+export function attachTtfa(
+  items: TranscriptItem[],
+  itemId: string,
+  milliseconds: number,
+): TranscriptItem[] {
+  if (!Number.isFinite(milliseconds) || milliseconds < 0) return items;
+  const index = items.findIndex((item) => item.id === itemId && item.role === "assistant");
+  if (index < 0 || items[index]?.ttfaMs !== undefined) return items;
+  const next = [...items];
+  next[index] = { ...items[index]!, ttfaMs: milliseconds };
   return next;
 }
 

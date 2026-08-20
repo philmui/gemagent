@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 import { scrollConversationToLatest } from "@/lib/conversation-scroll";
+import { formatTtfaSeconds } from "@/lib/ttfa";
 import { PROVIDERS, type TranscriptItem } from "@/lib/types";
-import { SparkIcon, TrashIcon } from "./icons";
+import { SparkIcon, TrashIcon, VolumeIcon } from "./icons";
 
 interface ConversationPanelProps {
   items: TranscriptItem[];
@@ -98,18 +99,60 @@ export function ConversationPanel({ items, active, onClear }: ConversationPanelP
                 );
               }
               const provider = PROVIDERS[item.provider];
+              const ttfaSeconds =
+                item.role === "assistant" ? formatTtfaSeconds(item.ttfaMs) : null;
+              const ttfaPending = ttfaSeconds === null && item.status !== "interrupted";
+              const stateLabel =
+                item.status === "interrupted"
+                  ? "Interrupted"
+                  : item.status === "partial"
+                    ? "Listening…"
+                    : null;
               return (
                 <article className={`caption caption-${item.role}`} key={item.id}>
                   <div className="caption-meta">
-                    <span>{item.role === "user" ? "You" : provider.label}</span>
+                    <div className="caption-speaker">
+                      <span>{item.role === "user" ? "You" : provider.label}</span>
+                      {item.role === "assistant" ? (
+                        <span
+                          className="caption-ttfa"
+                          title={
+                            ttfaSeconds === null
+                              ? ttfaPending
+                                ? "Waiting for first response audio"
+                                : "No response audio started before this reply was interrupted"
+                              : "Time to first audio, measured from detected end of your speech to first response audio"
+                          }
+                        >
+                          <VolumeIcon />
+                          <span className="caption-ttfa-label" aria-hidden="true">TTFA</span>
+                          {ttfaSeconds === null ? (
+                            <span
+                              className="caption-ttfa-value"
+                              aria-label={
+                                ttfaPending
+                                  ? "Time to first audio pending"
+                                  : "Time to first audio unavailable"
+                              }
+                            >
+                              {ttfaPending ? "…" : "—"}
+                            </span>
+                          ) : (
+                            <time className="caption-ttfa-value" dateTime={`PT${ttfaSeconds}S`}>
+                              <span aria-hidden="true">{ttfaSeconds} s</span>
+                              <span className="visually-hidden">
+                                Time to first audio: {ttfaSeconds} seconds, measured from detected
+                                end of your speech to first response audio.
+                              </span>
+                            </time>
+                          )}
+                        </span>
+                      ) : null}
+                    </div>
                     <code>{item.model}</code>
                   </div>
                   <p>{item.text}</p>
-                  {item.status !== "final" ? (
-                    <span className="caption-state">
-                      {item.status === "interrupted" ? "Interrupted" : "Listening…"}
-                    </span>
-                  ) : null}
+                  {stateLabel ? <span className="caption-state">{stateLabel}</span> : null}
                 </article>
               );
             })

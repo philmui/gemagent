@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  attachTtfa,
   finalizeEpoch,
   interruptAssistant,
   interruptPartials,
@@ -111,6 +112,37 @@ describe("transcript reconciliation", () => {
     );
 
     expect(items[0]).toMatchObject({ text: "Partial answer", status: "interrupted" });
+  });
+
+  it("attaches TTFA only to its assistant response and preserves it through updates", () => {
+    let items = upsertCaption(
+      [],
+      { role: "assistant", text: "Starting", itemId: "answer", mode: "replace" },
+      context,
+    );
+    const assistantId = items[0]!.id;
+    items = attachTtfa(items, assistantId, 846.4);
+    items = upsertCaption(
+      items,
+      {
+        role: "assistant",
+        text: "Complete answer",
+        itemId: "answer",
+        mode: "replace",
+        final: true,
+      },
+      { ...context, sequence: 2 },
+    );
+
+    expect(items[0]).toMatchObject({ text: "Complete answer", ttfaMs: 846.4 });
+    expect(attachTtfa(items, assistantId, 999)).toBe(items);
+
+    const user = upsertCaption(
+      [],
+      { role: "user", text: "Question", itemId: "question", mode: "replace" },
+      context,
+    );
+    expect(attachTtfa(user, user[0]!.id, 500)).toBe(user);
   });
 
   it("marks a flushed final caption interrupted when the wire event follows it", () => {

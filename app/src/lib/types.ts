@@ -24,6 +24,8 @@ export interface TranscriptItem {
   text: string;
   status: TranscriptStatus;
   sequence: number;
+  /** Browser-measured time from detected user end-of-turn to first response audio. */
+  ttfaMs?: number;
 }
 
 export interface ProviderOption {
@@ -149,6 +151,10 @@ export interface AdapterCallbacks {
   onInterrupted: (itemId?: string) => void;
   onLevel: (level: number) => void;
   onOutputLevel: (level: number) => void;
+  /** Monotonic browser time when the first response audio reaches local playback. */
+  onAudioStart: (atMs: number) => void;
+  /** Monotonic browser time when a completed response finishes local playback. */
+  onAudioEnd: (atMs: number) => void;
   onTelemetry: (kind: TelemetryEventKind) => void;
   onError: (message: string) => void;
 }

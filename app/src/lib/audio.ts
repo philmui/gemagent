@@ -314,10 +314,11 @@ export class PcmAudioPlayer {
   private sources = new Set<AudioBufferSourceNode>();
   private nextStartTime = 0;
   private playing = false;
+  private playingNotified = false;
   private resumePromise: Promise<void> | null = null;
 
   constructor(
-    private readonly onPlayingChange: (playing: boolean) => void,
+    private readonly onPlayingChange: (playing: boolean, startsAtMs?: number) => void,
     private readonly onPlaybackError: (message: string) => void = () => undefined,
     private readonly onLevel: (level: number) => void = () => undefined,
   ) {}
@@ -395,16 +396,34 @@ export class PcmAudioPlayer {
       this.sources.delete(source);
       if (this.sources.size === 0 && this.playing) {
         this.playing = false;
-        this.onPlayingChange(false);
+        if (this.playingNotified) this.onPlayingChange(false, performance.now());
+        this.playingNotified = false;
       }
     });
     this.sources.add(source);
     this.nextStartTime = startAt + buffer.duration;
-    if (!this.playing) {
-      this.playing = true;
-      this.onPlayingChange(true);
-    }
+    const startsPlayback = !this.playing;
+    if (startsPlayback) this.playing = true;
     source.start(startAt);
+    if (startsPlayback) {
+      const notifyPlaybackStart = () => {
+        if (
+          this.context !== context ||
+          context.state !== "running" ||
+          !this.playing ||
+          this.playingNotified
+        ) {
+          return;
+        }
+        this.playingNotified = true;
+        // Web Audio schedules a short safety lead. Report the scheduled graph
+        // start rather than the earlier moment when the PCM packet arrived.
+        const delayMs = Math.max(0, startAt - context.currentTime) * 1_000;
+        this.onPlayingChange(true, performance.now() + delayMs);
+      };
+      if (context.state === "running") notifyPlaybackStart();
+      else void this.resumePromise?.then(notifyPlaybackStart);
+    }
     return true;
   }
 
@@ -421,7 +440,8 @@ export class PcmAudioPlayer {
     this.nextStartTime = this.context?.currentTime ?? 0;
     if (this.playing) {
       this.playing = false;
-      this.onPlayingChange(false);
+      if (this.playingNotified) this.onPlayingChange(false, performance.now());
+      this.playingNotified = false;
     }
   }
 

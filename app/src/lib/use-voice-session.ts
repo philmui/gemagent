@@ -7,11 +7,15 @@ import { fetchHealth } from "./backend";
 import { GeminiLiveAdapter } from "./gemini-adapter";
 import { OpenAIRealtimeAdapter } from "./openai-adapter";
 import {
+  attachTtfa,
+  captionItemId,
   finalizeEpoch,
   interruptAssistant,
   interruptPartials,
+  transcriptItemId,
   upsertCaption,
 } from "./transcript";
+import { TtfaTracker } from "./ttfa";
 import {
   DEFAULT_VOICE,
   DEFAULT_ADVANCED_VOICE_SETTINGS,
@@ -96,6 +100,7 @@ export function useVoiceSession() {
   const voicesRef = useRef<Record<Provider, string>>(DEFAULT_VOICE);
   const advancedSettingsRef = useRef<AdvancedVoiceSettings>(DEFAULT_ADVANCED_VOICE_SETTINGS);
   const lifecycleRef = useRef(new AsyncSerialQueue());
+  const ttfaTrackerRef = useRef(new TtfaTracker());
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -171,6 +176,7 @@ export function useVoiceSession() {
   const failEpoch = useCallback((epoch: number, message: string) => {
     if (epoch !== epochRef.current) return;
     epochRef.current += 1;
+    ttfaTrackerRef.current.reset();
     abortRef.current?.abort();
     abortRef.current = null;
     engagedRef.current = false;
@@ -195,6 +201,7 @@ export function useVoiceSession() {
       const previousEpoch = epochRef.current;
       const epoch = previousEpoch + 1;
       epochRef.current = epoch;
+      ttfaTrackerRef.current.reset();
       setMonitorEpoch(epoch);
       abortRef.current?.abort();
       setError(null);
@@ -231,21 +238,42 @@ export function useVoiceSession() {
           onCaption: (event) => {
             if (!isCurrent()) return;
             const sequence = ++sequenceRef.current;
-            setTranscript((items) =>
-              upsertCaption(items, event, {
-                epoch,
-                provider,
-                model: effectiveModel,
-                sequence,
-              }),
-            );
+            const context = { epoch, provider, model: effectiveModel, sequence };
+            const measurement =
+              event.role === "assistant"
+                ? ttfaTrackerRef.current.observeAssistantItem(
+                    epoch,
+                    captionItemId(event, context),
+                  )
+                : null;
+            setTranscript((items) => {
+              const next = upsertCaption(items, event, context);
+              return measurement
+                ? attachTtfa(next, measurement.itemId, measurement.milliseconds)
+                : next;
+            });
           },
           onTurnComplete: () => {
-            if (isCurrent()) setTranscript((items) => finalizeEpoch(items, epoch));
+            if (isCurrent()) {
+              ttfaTrackerRef.current.cancelUnmeasured();
+              setTranscript((items) => finalizeEpoch(items, epoch));
+            }
           },
           onInterrupted: (itemId) => {
             if (isCurrent()) {
-              setTranscript((items) => interruptAssistant(items, epoch, itemId));
+              const measurement = itemId
+                ? ttfaTrackerRef.current.observeAssistantItem(
+                    epoch,
+                    transcriptItemId(epoch, provider, "assistant", itemId),
+                  )
+                : null;
+              ttfaTrackerRef.current.cancelUnmeasured();
+              setTranscript((items) => {
+                const next = interruptAssistant(items, epoch, itemId);
+                return measurement
+                  ? attachTtfa(next, measurement.itemId, measurement.milliseconds)
+                  : next;
+              });
             }
           },
           onLevel: (nextLevel) => {
@@ -254,8 +282,31 @@ export function useVoiceSession() {
           onOutputLevel: (nextLevel) => {
             if (isCurrent()) setOutputLevel(nextLevel);
           },
+          onAudioStart: (atMs) => {
+            if (!isCurrent()) return;
+            const measurement = ttfaTrackerRef.current.observeAudioStart(
+              epoch,
+              atMs,
+            );
+            if (measurement) {
+              setTranscript((items) =>
+                attachTtfa(items, measurement.itemId, measurement.milliseconds),
+              );
+            }
+          },
+          onAudioEnd: (atMs) => {
+            if (!isCurrent()) return;
+            // Tool-backed and other multi-part answers may create a second
+            // assistant transcript item without another user utterance. Its
+            // TTFA starts when the preceding assistant audio finishes.
+            ttfaTrackerRef.current.beginTurn(epoch, atMs);
+          },
           onTelemetry: (kind) => {
             if (!isCurrent()) return;
+            if (kind === "speech-start") ttfaTrackerRef.current.cancelUnmeasured();
+            if (kind === "speech-end") {
+              ttfaTrackerRef.current.beginTurn(epoch, performance.now());
+            }
             const event = { sequence: ++telemetrySequenceRef.current, kind };
             setTelemetryEvents((events) => [...events.slice(-31), event]);
           },
@@ -324,6 +375,7 @@ export function useVoiceSession() {
     const interruptedEpoch = epochRef.current;
     const stopEpoch = interruptedEpoch + 1;
     epochRef.current = stopEpoch;
+    ttfaTrackerRef.current.reset();
     abortRef.current?.abort();
     abortRef.current = null;
     engagedRef.current = false;
@@ -413,6 +465,7 @@ export function useVoiceSession() {
   useEffect(
     () => () => {
       epochRef.current += 1;
+      ttfaTrackerRef.current.reset();
       abortRef.current?.abort();
       void lifecycleRef.current
         .run(async () => {

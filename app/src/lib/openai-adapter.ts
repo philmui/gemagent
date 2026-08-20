@@ -345,6 +345,9 @@ export class OpenAIRealtimeAdapter implements VoiceSessionAdapter {
           break;
         case "output_audio_buffer.started":
           outputInterrupted = false;
+          // This WebRTC event is emitted when the local output buffer begins,
+          // which is the user-visible end boundary for TTFA.
+          this.callbacks.onAudioStart(performance.now());
           this.recoverRemoteAudioPlayback();
           this.callbacks.onPhase("assistant-speaking");
           break;
@@ -354,7 +357,12 @@ export class OpenAIRealtimeAdapter implements VoiceSessionAdapter {
           this.callbacks.onPhase("listening");
           break;
         case "output_audio_buffer.stopped":
-          if (!outputInterrupted) this.callbacks.onTurnComplete();
+          if (!outputInterrupted) {
+            // Close the transcript response first, then anchor a possible
+            // follow-up response at the end of this reply's local audio.
+            this.callbacks.onTurnComplete();
+            this.callbacks.onAudioEnd(performance.now());
+          }
           outputInterrupted = false;
           this.callbacks.onPhase("listening");
           break;
