@@ -1514,6 +1514,20 @@ code {
   white-space: nowrap;
 }
 
+.caption-speaker {
+  display: inline-flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.caption-speaker > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .caption p {
   margin: 7px 0 0;
   color: var(--copy-strong);
@@ -1527,6 +1541,42 @@ code {
   color: var(--quiet);
   font-size: 9px;
   font-style: italic;
+}
+
+.caption-ttfa {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 5px;
+  border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface-subtle));
+  color: var(--quiet);
+  cursor: help;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.caption-ttfa svg {
+  width: 10px;
+  height: 10px;
+  color: var(--accent);
+}
+
+.caption-ttfa-label {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.caption-ttfa-value {
+  color: var(--copy-strong);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
 }
 
 .session-divider {

@@ -155,6 +155,22 @@ describe("caption text merging", () => {
 });
 
 describe("speaker playback", () => {
+  it("reports Gemini TTFA at the scheduled audio graph start", async () => {
+    installFakeAudioContext();
+    const starts: number[] = [];
+    const before = performance.now();
+    const player = new PcmAudioPlayer((playing, startsAtMs) => {
+      if (playing && startsAtMs !== undefined) starts.push(startsAtMs);
+    });
+    await player.prime();
+
+    player.playBytes(new Uint8Array([0, 0, 255, 127]));
+
+    expect(starts).toHaveLength(1);
+    expect(starts[0]).toBeGreaterThanOrEqual(before + 24);
+    await player.close();
+  });
+
   it("measures the actual Gemini speaker output graph", async () => {
     vi.useFakeTimers();
     installFakeAudioContext();

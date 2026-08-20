@@ -59,6 +59,8 @@ export class GeminiLiveAdapter implements VoiceSessionAdapter {
   private muted = false;
   private ready = false;
   private stopPromise: Promise<void> | null = null;
+  private turnCompleteAwaitingAudioEnd = false;
+  private lastAudioEndAtMs: number | null = null;
   private ambience = new AmbientSoundPlayer();
 
   private readonly settings: AdvancedVoiceSettings;
@@ -76,8 +78,22 @@ export class GeminiLiveAdapter implements VoiceSessionAdapter {
       this.settings = DEFAULT_ADVANCED_VOICE_SETTINGS;
       this.callbacks = settingsOrCallbacks as AdapterCallbacks;
     }
-    this.player = new PcmAudioPlayer((playing) => {
-      if (!this.stopped) this.callbacks.onPhase(playing ? "assistant-speaking" : "listening");
+    this.player = new PcmAudioPlayer((playing, audioAtMs) => {
+      if (!this.stopped) {
+        const atMs = audioAtMs ?? performance.now();
+        if (playing) {
+          this.lastAudioEndAtMs = null;
+          this.callbacks.onAudioStart(atMs);
+        } else {
+          this.lastAudioEndAtMs = atMs;
+          if (this.turnCompleteAwaitingAudioEnd) {
+            this.turnCompleteAwaitingAudioEnd = false;
+            this.lastAudioEndAtMs = null;
+            this.callbacks.onAudioEnd(atMs);
+          }
+        }
+        this.callbacks.onPhase(playing ? "assistant-speaking" : "listening");
+      }
     }, (message) => {
       if (!this.stopped) this.callbacks.onError(message);
     }, (level) => {
@@ -89,6 +105,8 @@ export class GeminiLiveAdapter implements VoiceSessionAdapter {
     this.stopped = false;
     this.stopPromise = null;
     this.ready = false;
+    this.turnCompleteAwaitingAudioEnd = false;
+    this.lastAudioEndAtMs = null;
     signal.addEventListener("abort", () => void this.stop("aborted"), { once: true });
     assertGeminiAudioSupport();
 
@@ -262,6 +280,16 @@ export class GeminiLiveAdapter implements VoiceSessionAdapter {
         break;
       case "turn_complete":
         this.callbacks.onTurnComplete();
+        if (this.player.isPlaying) {
+          // Ignore transient PCM queue gaps: a continuation window begins only
+          // after the provider has closed this logical response and its final
+          // scheduled audio has actually ended.
+          this.turnCompleteAwaitingAudioEnd = true;
+        } else if (this.lastAudioEndAtMs !== null) {
+          const endedAtMs = this.lastAudioEndAtMs;
+          this.lastAudioEndAtMs = null;
+          this.callbacks.onAudioEnd(endedAtMs);
+        }
         // ADK can finish the logical turn while Web Audio still has scheduled
         // PCM buffers. Keep the visible phase truthful until playback ends.
         this.callbacks.onPhase(this.player.isPlaying ? "assistant-speaking" : "listening");
@@ -270,6 +298,10 @@ export class GeminiLiveAdapter implements VoiceSessionAdapter {
         this.callbacks.onTelemetry(message.kind === "call" ? "tool-call" : "tool-return");
         break;
       case "endpoint":
+        if (message.kind === "speech-start") {
+          this.turnCompleteAwaitingAudioEnd = false;
+          this.lastAudioEndAtMs = null;
+        }
         this.callbacks.onTelemetry(message.kind);
         break;
       case "error":
@@ -296,6 +328,8 @@ export class GeminiLiveAdapter implements VoiceSessionAdapter {
   private async performStop(): Promise<void> {
     this.stopped = true;
     this.ready = false;
+    this.turnCompleteAwaitingAudioEnd = false;
+    this.lastAudioEndAtMs = null;
     const socket = this.socket;
     this.socket = null;
     if (socket?.readyState === WebSocket.OPEN) {
